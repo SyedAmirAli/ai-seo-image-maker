@@ -86,7 +86,7 @@ your_actual_gemini_api_key_here
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/SyedAmirAli/ai-seo-image-maker.git
 cd image-seo
 ```
 
