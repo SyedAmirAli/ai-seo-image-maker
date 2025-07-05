@@ -8,7 +8,7 @@ __pycache__/
 .env.test
 .env.production
 
-# /credentials/gemini_api_key.txt
+/credentials/gemini_api_key.txt
 
 /output/
 /images/
