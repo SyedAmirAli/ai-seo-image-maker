@@ -71,21 +71,21 @@ class ImageMetadata:
         return cls(title=title, description=description, subject=subject, keywords=keywords, filename=filename)
     
     @classmethod
-    def create_full(cls, title: str, description: str, subject: str, keywords: str,
-                   author: str = None, copyright: str = None, rating: int = None,
-                   location: str = None, camera_make: str = None, camera_model: str = None,
-                   category: str = None, mood: str = None, style: str = None, filename: str = None) -> 'ImageMetadata':
+    def create_full(cls, title: str, description: str, subject: str, keywords: str, filename: str,
+                   author: Optional[str] = None, copyright: Optional[str] = None, rating: Optional[int] = None,
+                   location: Optional[str] = None, camera_make: Optional[str] = None, camera_model: Optional[str] = None,
+                   category: Optional[str] = None, mood: Optional[str] = None, style: Optional[str] = None) -> 'ImageMetadata':
         """Factory method to create full metadata with all optional fields"""
         return cls(
-            title=title, description=description, subject=subject, keywords=keywords,
+            title=title, description=description, subject=subject, keywords=keywords, filename=filename,
             author=author, copyright=copyright, rating=rating, location=location,
             camera_make=camera_make, camera_model=camera_model,
-            category=category, mood=mood, style=style, filename=filename
+            category=category, mood=mood, style=style
         )
     
     @classmethod
-    def from_ai_metadata(cls, ai_metadata: 'AIGeneratedMetadata', author: str = None, 
-                        copyright: str = None, rating: int = None) -> 'ImageMetadata':
+    def from_ai_metadata(cls, ai_metadata: 'AIGeneratedMetadata', author: Optional[str] = None, 
+                        copyright: Optional[str] = None, rating: Optional[int] = None) -> 'ImageMetadata':
         """Create ImageMetadata from AIGeneratedMetadata"""
         return cls(
             title=ai_metadata.title,

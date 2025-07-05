@@ -12,7 +12,7 @@ def get_credential(filename: str) -> str:
         exit(1)
     return open(os.path.join(os.path.dirname(__file__), 'credentials', filename), 'r').read().strip()
     
-def get_credential_if_exists(filename: str) -> str:
+def get_credential_if_exists(filename: str) -> str | None:
     if not os.path.exists(os.path.join(os.path.dirname(__file__), 'credentials')):
         return None
     return open(os.path.join(os.path.dirname(__file__), 'credentials', filename), 'r').read().strip()
@@ -20,6 +20,9 @@ def get_credential_if_exists(filename: str) -> str:
 INPUT_DIR = get_credential('input_dir.txt')
 OUTPUT_PATH = get_credential('output_dir.txt')
 AUTHOR = get_credential_if_exists('author.txt')
+
+WEBSITE = get_credential_if_exists('website.txt')
+EMAIL = get_credential_if_exists('email.txt')
 
 LOG = True
 LOG_JSON = False

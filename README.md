@@ -1,5 +1,9 @@
 # 🤖 AI-Powered Image SEO Optimizer
 
+**Creator & Maintainer:** Syed Amir Ali  
+Website: [syedamirali.com](https://syedamirali.com)  
+Email: syedamirali473@gmail.com
+
 A powerful Python tool that uses **Google Gemini AI** to automatically analyze images and generate SEO-optimized metadata including titles, descriptions, keywords, and filenames.
 
 ## 🔐 Credentials Configuration
@@ -71,7 +75,7 @@ your_actual_gemini_api_key_here
 -   🎯 **AI-Powered Analysis** - Uses Google Gemini AI to understand image content
 -   📝 **SEO Metadata Generation** - Automatically creates titles, descriptions, keywords
 -   🏷️ **Smart Filename Suggestions** - Generates SEO-friendly filenames
--   📊 **Metadata Embedding** - Embeds XMP, EXIF, and IPTC metadata into images
+-   📊 **Metadata Embedding** - Embeds EXIF metadata into images using Windows-compatible libraries
 -   🎨 **Batch Processing** - Process multiple images at once
 -   🔧 **TypeScript-like Experience** - Auto-completion and type hints in Python
 -   📁 **Organized Output** - Clean folder structure for processed images
@@ -102,6 +106,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
+
+**Note**: The project now uses Windows-compatible libraries (`Pillow` and `piexif`) instead of the previous `pyexiv2` which required compilation.
 
 ### 4. **Important: Setup API Key**
 
@@ -296,15 +302,17 @@ echo "your_api_key_here" > credentials/gemini_api_key.txt
 
 ### System Dependencies
 
-If you encounter metadata writing issues:
+**Windows Users**: No additional system dependencies required! The project uses Windows-compatible libraries.
+
+**Linux/macOS Users**: If you encounter any issues, you may need:
 
 ```bash
-# Ubuntu/Debian
+# Ubuntu/Debian (optional)
 sudo apt update
-sudo apt install libexiv2-dev python3-dev pkg-config libboost-python-dev
+sudo apt install python3-dev
 
-# macOS (with Homebrew)
-brew install exiv2 boost-python3
+# macOS (optional, with Homebrew)
+brew install python3
 ```
 
 ## 🤝 Contributing
@@ -321,9 +329,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+-   **Project Creator & Maintainer:** Syed Amir Ali ([syedamirali.com](https://syedamirali.com), syedamirali473@gmail.com)
 -   **Google Gemini AI** for powerful image analysis
 -   **Python Community** for excellent libraries
 -   **ExifTool** for metadata processing capabilities
+
+---
+
+---
+
+## ✅ Project Status
+
+**🎉 Ready to Use!** This project is created and maintained by Syed Amir Ali ([syedamirali.com](https://syedamirali.com), syedamirali473@gmail.com) and has been successfully updated with Windows-compatible libraries and is ready for production use.
+
+### Recent Updates (v1.0.1)
+
+- ✅ **Windows Compatibility**: Migrated from `pyexiv2` to `Pillow` and `piexif` libraries
+- ✅ **No Compilation Required**: Eliminated Microsoft Visual C++ Build Tools dependency
+- ✅ **Cross-Platform Support**: Works seamlessly on Windows, Linux, and macOS
+- ✅ **Type Safety**: Improved type annotations for better IDE support
+- ✅ **Error Handling**: Enhanced error recovery and user feedback
+
+### What's Working
+
+- ✅ **AI Image Analysis**: Google Gemini AI integration
+- ✅ **SEO Metadata Generation**: Automatic title, description, keywords
+- ✅ **EXIF Metadata Embedding**: Professional metadata writing
+- ✅ **Batch Processing**: Multiple image processing
+- ✅ **Cross-Platform**: Windows, Linux, macOS support
 
 ---
 
