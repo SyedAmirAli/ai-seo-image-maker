@@ -1,5 +1,7 @@
-from dataclasses import dataclass
+import json
 from typing import Optional
+from dotenv import LOG, LOG_JSON
+from dataclasses import asdict, dataclass
 
 @dataclass
 class AIGeneratedMetadata:
@@ -100,3 +102,21 @@ class ImageMetadata:
             style=ai_metadata.style,
             filename=ai_metadata.filename
         )
+
+def example_ai_metadata() -> AIGeneratedMetadata:
+    ai_metadata = AIGeneratedMetadata(
+        title="Fresh Fruit Salad in Coconut Bowl",
+        description="Delicious & healthy summer fruit salad with watermelon, strawberries, kiwi, cherries & more! Perfect for a refreshing snack or dessert.",
+        subject="Fruit salad",
+        keywords="fruit salad, summer fruits, healthy snack, watermelon, strawberries, kiwi, cherries, raspberries, blueberries, coconut bowl, healthy eating, summer food",
+        filename="fresh-fruit-salad-coconut-bowl",
+        category="food",
+        mood="refreshing, healthy, vibrant",
+        style="minimalist"
+    )
+
+    if LOG and LOG_JSON: 
+        print("\n🎯 AI Generated SEO Metadata:")
+        print(json.dumps(asdict(ai_metadata), indent=4))
+        print("\n🚀 Creating SEO optimized image...")
+    return ai_metadata

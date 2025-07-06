@@ -36,3 +36,6 @@ GEMINI_API_KEY = get_credential('gemini_api_key.txt')
 
 PROMPT = get_credential('prompt.txt')
 MODEL = get_credential('model.txt')
+
+IMAGE_DESCRIPTION_KEY:str = 'title' # title, description, subject, keywords
+REMOVE_BACKUP_FILE:bool = True

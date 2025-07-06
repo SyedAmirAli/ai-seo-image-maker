@@ -1,3 +1,5 @@
 Pillow
 piexif
 google-generativeai
+imgtag
+iptcinfo3
