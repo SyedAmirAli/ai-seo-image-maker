@@ -3,7 +3,7 @@ import shutil
 from PIL import Image
 import piexif 
 from dto import AIGeneratedMetadata
-from dotenv import AUTHOR, LOG, REMOVE_BACKUP_FILE, WEBSITE, EMAIL, OUTPUT_PATH, IMAGE_DESCRIPTION_KEY, LOG_JSON
+from dotenv import AUTHOR, IMAGE_SUBJECT_KEY, LOG, REMOVE_BACKUP_FILE, WEBSITE, EMAIL, OUTPUT_PATH, IMAGE_DESCRIPTION_KEY, LOG_JSON
 
 debug_print = LOG and LOG_JSON
 
@@ -62,7 +62,7 @@ def safe_encode_utf16le(text) -> bytes:
         return b''
     return str(text).encode('utf-16le', errors='ignore')
 
-def add_iptc_keywords(image_path: str, keywords_list: list) -> bool:
+def add_iptc_keywords(image_path: str, keywords_list: list, title: str) -> bool:
     """
     Add IPTC Keywords that Adobe Stock can read
     This is the PROPER way to add keywords that Adobe Stock recognizes
@@ -76,11 +76,10 @@ def add_iptc_keywords(image_path: str, keywords_list: list) -> bool:
         info = IPTCInfo(image_path)
         
         # Set IPTC Keywords (comma separated list)
-        # This is the field Adobe Stock, Lightroom, Bridge, etc. read from
         info['keywords'] = keywords_list
         
-        # Set other IPTC fields for better compatibility
-        info['object name'] = keywords_list[0] if keywords_list else "AI Generated Image"
+        # The 'object name' is used as the Title in Adobe Stock and other software
+        info['object name'] = title
         info['caption/abstract'] = ', '.join(keywords_list) if keywords_list else ""
         
         # Save the IPTC data
@@ -110,7 +109,6 @@ def add_metadata_to_image(
         # Create EXIF dict
         exif_dict = {"0th": {}, "Exif": {}, "GPS": {}, "1st": {}, "thumbnail": None}
 
-        # if not exists title, keywords, description, subject then exit and throw error
         if not ai_metadata.title or not ai_metadata.keywords or not ai_metadata.description or not ai_metadata.subject:
             raise ValueError("Title, keywords, description, and subject are required")
 
@@ -122,6 +120,18 @@ def add_metadata_to_image(
             exif_dict["0th"][piexif.ImageIFD.XPKeywords] = keywords_utf16le
             if debug_print: print(f"✅ XPKeywords FORCED with commas: {comma_keywords}") 
 
+        # Set Title, Subject, and Description from AI metadata
+        title_utf16le = safe_encode_utf16le(ai_metadata.title)
+        exif_dict["0th"][piexif.ImageIFD.XPTitle] = title_utf16le
+
+        subject = getattr(ai_metadata, IMAGE_SUBJECT_KEY, None)
+        if subject:
+            exif_dict["0th"][piexif.ImageIFD.XPSubject] = subject
+            if debug_print: print(f"✅ Subject set from global variable: {IMAGE_SUBJECT_KEY}")
+        else:
+            exif_dict["0th"][piexif.ImageIFD.XPSubject] = title_utf16le # Set Subject to be same as Title
+            if debug_print: print(f"✅ Subject set from AI metadata: {ai_metadata.title}")
+
         description = getattr(ai_metadata, IMAGE_DESCRIPTION_KEY, None)
         if description:
             exif_dict["0th"][piexif.ImageIFD.ImageDescription] = description
@@ -130,12 +140,6 @@ def add_metadata_to_image(
             exif_dict["0th"][piexif.ImageIFD.ImageDescription] = ai_metadata.title
             if debug_print: print(f"✅ Description set from AI metadata: {ai_metadata.title}")
         
-        subject_utf16le = safe_encode_utf16le(ai_metadata.subject)
-        exif_dict["0th"][piexif.ImageIFD.XPSubject] = subject_utf16le
-
-        title_utf16le = safe_encode_utf16le(ai_metadata.title)
-        exif_dict["0th"][piexif.ImageIFD.XPTitle] = title_utf16le
-
         comment_utf16le = safe_encode_utf16le(ai_metadata.description)
         exif_dict["0th"][piexif.ImageIFD.XPComment] = comment_utf16le
 
@@ -168,16 +172,7 @@ def add_metadata_to_image(
         img = Image.open(image_path)
         img.save(image_path, exif=exif_bytes, quality=95, optimize=True)
 
-        # IPTC: always use a list for keywords
-        if ai_metadata.keywords:
-            if isinstance(ai_metadata.keywords, str):
-                keywords_list = [k.strip() for k in ai_metadata.keywords.split(',') if k.strip()]
-            else:
-                keywords_list = list(ai_metadata.keywords)
-            if keywords_list:
-                info = IPTCInfo(image_path)
-                info['keywords'] = keywords_list
-                info.save()
+        # Remove redundant IPTC logic from this function
         return True
             
     except Exception as e:
@@ -192,7 +187,7 @@ def sanitize_filename(filename: str) -> str:
         return "image"
     
     # Characters that are invalid in Windows filenames
-    invalid_chars = '<>:"/\\|?*'
+    invalid_chars = '<>:"/\\|?*!@#$%^&()=[]{};:\'",'
     
     for char in invalid_chars:
         filename = filename.replace(char, '_')
@@ -252,7 +247,9 @@ def create_seo_optimized_image(
         
         add_metadata_to_image(new_path, ai_metadata, author, copyright_info)
         processed_keywords = process_keywords_individually(str(ai_metadata.keywords))
-        if processed_keywords: add_iptc_keywords(new_path, processed_keywords)
+        if processed_keywords: 
+            # Pass the title to be used for the IPTC 'object name'
+            add_iptc_keywords(new_path, processed_keywords, ai_metadata.title)
 
         if REMOVE_BACKUP_FILE:
             bk_path = f"{new_path}~"

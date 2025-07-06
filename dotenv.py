@@ -38,4 +38,5 @@ PROMPT = get_credential('prompt.txt')
 MODEL = get_credential('model.txt')
 
 IMAGE_DESCRIPTION_KEY:str = 'title' # title, description, subject, keywords
+IMAGE_SUBJECT_KEY:str = 'title' # title, description, subject, keywords
 REMOVE_BACKUP_FILE:bool = True
